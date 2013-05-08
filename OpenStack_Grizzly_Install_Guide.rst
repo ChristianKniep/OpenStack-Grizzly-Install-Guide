@@ -96,16 +96,17 @@ Status: Stable
 * Only one NIC should have an internet access (/etc/network/interfaces) :: 
 
    #For Exposing OpenStack API over the internet
-   auto eth1
-   iface eth1 inet static
-   address 192.168.100.51
+   auto eth0
+   iface eth0 inet static
+   address 192.168.1.28
    netmask 255.255.255.0
-   gateway 192.168.100.1
+   gateway 192.168.1.1
    dns-nameservers 8.8.8.8
 
    #Not internet connected(used for OpenStack management)
-   auto eth0
-   iface eth0 inet static
+   auto eth0:0
+   iface eth0:0 inet static
+   name Ethernet alias LAN card
    address 10.10.100.51
    netmask 255.255.255.0
 
