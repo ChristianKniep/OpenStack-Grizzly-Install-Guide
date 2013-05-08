@@ -59,7 +59,7 @@ Status: Stable
 ====================
 
 :Node Role: NICs
-:Single Node: eth0 (192.168.1.28), eth0:0 (10.10.100.51)
+:Single Node: eth0 (192.168.100.51), eth0:0 (10.10.100.51)
 
 **Note 1:** Multi node deployment is available on the OVS_MultiNode branch.
 
@@ -98,7 +98,7 @@ Status: Stable
    #For Exposing OpenStack API over the internet
    auto eth0
    iface eth0 inet static
-   address 192.168.1.28
+   address 192.168.100.51
    netmask 255.255.255.0
    gateway 192.168.1.1
    dns-nameservers 8.8.8.8
