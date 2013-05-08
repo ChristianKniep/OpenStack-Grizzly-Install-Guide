@@ -59,7 +59,7 @@ Status: Stable
 ====================
 
 :Node Role: NICs
-:Single Node: eth0 (10.10.100.51), eth1 (192.168.100.51)
+:Single Node: eth0 (192.168.1.28), eth0:0 (10.10.100.51)
 
 **Note 1:** Multi node deployment is available on the OVS_MultiNode branch.
 
