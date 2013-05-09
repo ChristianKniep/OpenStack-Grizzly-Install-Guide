@@ -59,7 +59,7 @@ Status: Stable
 ====================
 
 :Node Role: NICs
-:Single Node: eth0 (192.168.100.51), eth0:0 (10.10.100.51)
+:Single Node: eth0 (192.168.1.28)
 
 **Note 1:** Multi node deployment is available on the OVS_MultiNode branch.
 
@@ -98,17 +98,10 @@ Status: Stable
    #For Exposing OpenStack API over the internet
    auto eth0
    iface eth0 inet static
-   address 192.168.100.51
+   address 192.168.1.28
    netmask 255.255.255.0
    gateway 192.168.1.1
    dns-nameservers 8.8.8.8
-
-   #Not internet connected(used for OpenStack management)
-   auto eth0:0
-   iface eth0:0 inet static
-   name Ethernet alias LAN card
-   address 10.10.100.51
-   netmask 255.255.255.0
 
 * Restart the networking service::
 
@@ -168,7 +161,7 @@ Status: Stable
 
 * Adapt the connection attribute in the /etc/keystone/keystone.conf to the new database::
 
-   connection = mysql://keystoneUser:keystonePass@10.10.100.51/keystone
+   connection = mysql://keystoneUser:keystonePass@192.168.1.28/keystone
 
 * Restart the identity service then synchronize the database::
 
@@ -196,7 +189,7 @@ Status: Stable
    export OS_TENANT_NAME=admin
    export OS_USERNAME=admin
    export OS_PASSWORD=admin_pass
-   export OS_AUTH_URL="http://192.168.100.51:5000/v2.0/"
+   export OS_AUTH_URL="http://192.168.1.28:5000/v2.0/"
 
    # Load it:
    source creds
@@ -229,7 +222,7 @@ Status: Stable
    [filter:authtoken]
    paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
    delay_auth_decision = true
-   auth_host = 10.10.100.51
+   auth_host = 192.168.1.28
    auth_port = 35357
    auth_protocol = http
    admin_tenant_name = service
@@ -240,7 +233,7 @@ Status: Stable
 
    [filter:authtoken]
    paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
-   auth_host = 10.10.100.51
+   auth_host = 192.168.1.28
    auth_port = 35357
    auth_protocol = http
    admin_tenant_name = service
@@ -249,7 +242,7 @@ Status: Stable
 
 * Update /etc/glance/glance-api.conf with::
 
-   sql_connection = mysql://glanceUser:glancePass@10.10.100.51/glance
+   sql_connection = mysql://glanceUser:glancePass@192.168.1.28/glance
 
 * And::
 
@@ -258,7 +251,7 @@ Status: Stable
    
 * Update the /etc/glance/glance-registry.conf with::
 
-   sql_connection = mysql://glanceUser:glancePass@10.10.100.51/glance
+   sql_connection = mysql://glanceUser:glancePass@192.168.1.28/glance
 
 * And::
 
@@ -311,7 +304,7 @@ Status: Stable
 
    [filter:authtoken]
    paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
-   auth_host = 10.10.100.51
+   auth_host = 192.168.1.28
    auth_port = 35357
    auth_protocol = http
    admin_tenant_name = service
@@ -321,7 +314,7 @@ Status: Stable
 * Edit the LinuxBridge plugin config file /etc/quantum/plugins/linuxbridge/linuxbridge_conf.ini with:: 
 
    # under [DATABASE] section  
-   sql_connection = mysql://quantumUser:quantumPass@10.10.100.51/quantum
+   sql_connection = mysql://quantumUser:quantumPass@192.168.1.28/quantum
    # under [LINUX_BRIDGE] section
    physical_interface_mappings = physnet1:eth0
    # under [VLANS] section
@@ -335,7 +328,7 @@ Status: Stable
 * Update the /etc/quantum/quantum.conf::
 
    [keystone_authtoken]
-   auth_host = 10.10.100.51
+   auth_host = 192.168.1.28
    auth_port = 35357
    auth_protocol = http
    admin_tenant_name = service
@@ -350,14 +343,14 @@ Status: Stable
 * Update /etc/quantum/metadata_agent.ini::
    
    # The Quantum user information for accessing the Quantum API.
-   auth_url = http://10.10.100.51:35357/v2.0
+   auth_url = http://192.168.1.28:35357/v2.0
    auth_region = RegionOne
    admin_tenant_name = service
    admin_user = quantum
    admin_password = service_pass
 
    # IP address used by Nova metadata server
-   nova_metadata_ip = 10.10.100.51
+   nova_metadata_ip = 192.168.1.28
 
    # TCP Port used by Nova metadata server
    nova_metadata_port = 8775
@@ -440,7 +433,7 @@ Status: Stable
 
    [filter:authtoken]
    paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
-   auth_host = 10.10.100.51
+   auth_host = 192.168.1.28
    auth_port = 35357
    auth_protocol = http
    admin_tenant_name = service
@@ -459,9 +452,9 @@ Status: Stable
    verbose=True
    api_paste_config=/etc/nova/api-paste.ini
    compute_scheduler_driver=nova.scheduler.simple.SimpleScheduler
-   rabbit_host=10.10.100.51
-   nova_url=http://10.10.100.51:8774/v1.1/
-   sql_connection=mysql://novaUser:novaPass@10.10.100.51/nova
+   rabbit_host=192.168.1.28
+   nova_url=http://192.168.1.28:8774/v1.1/
+   sql_connection=mysql://novaUser:novaPass@192.168.1.28/nova
    root_helper=sudo nova-rootwrap /etc/nova/rootwrap.conf
 
    # Auth
@@ -469,14 +462,14 @@ Status: Stable
    auth_strategy=keystone
 
    # Imaging service
-   glance_api_servers=10.10.100.51:9292
+   glance_api_servers=192.168.1.28:9292
    image_service=nova.image.glance.GlanceImageService
 
    # Vnc configuration
    novnc_enabled=true
-   novncproxy_base_url=http://192.168.100.51:6080/vnc_auto.html
+   novncproxy_base_url=http://192.168.1.28:6080/vnc_auto.html
    novncproxy_port=6080
-   vncserver_proxyclient_address=10.10.100.51
+   vncserver_proxyclient_address=192.168.1.28
    vncserver_listen=0.0.0.0
    
    # Metadata
@@ -485,12 +478,12 @@ Status: Stable
    
    # Network settings
    network_api_class=nova.network.quantumv2.api.API
-   quantum_url=http://10.10.100.51:9696
+   quantum_url=http://192.168.1.28:9696
    quantum_auth_strategy=keystone
    quantum_admin_tenant_name=service
    quantum_admin_username=quantum
    quantum_admin_password=service_pass
-   quantum_admin_auth_url=http://10.10.100.51:35357/v2.0
+   quantum_admin_auth_url=http://192.168.1.28:35357/v2.0
    libvirt_vif_driver=nova.virt.libvirt.vif.QuantumLinuxBridgeVIFDriver
    linuxnet_interface_driver=nova.network.linux_net.LinuxBridgeInterfaceDriver
    firewall_driver=nova.virt.libvirt.firewall.IptablesFirewallDriver
@@ -550,9 +543,9 @@ Status: Stable
    [filter:authtoken]
    paste.filter_factory = keystoneclient.middleware.auth_token:filter_factory
    service_protocol = http
-   service_host = 192.168.100.51
+   service_host = 192.168.1.28
    service_port = 5000
-   auth_host = 10.10.100.51
+   auth_host = 192.168.1.28
    auth_port = 35357
    auth_protocol = http
    admin_tenant_name = service
@@ -563,7 +556,7 @@ Status: Stable
 
    [DEFAULT]
    rootwrap_config=/etc/cinder/rootwrap.conf
-   sql_connection = mysql://cinderUser:cinderPass@10.10.100.51/cinder
+   sql_connection = mysql://cinderUser:cinderPass@192.168.1.28/cinder
    api_paste_config = /etc/cinder/api-paste.ini
    iscsi_helper=ietadm
    volume_name_template = volume-%s
@@ -621,7 +614,7 @@ Status: Stable
 
    service apache2 restart; service memcached restart
 
-You can now access your OpenStack **192.168.100.51/horizon** with credentials **admin:admin_pass**.
+You can now access your OpenStack **192.168.1.28/horizon** with credentials **admin:admin_pass**.
 
 9. Your first VM
 ================
